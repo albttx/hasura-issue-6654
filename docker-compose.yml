@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  psql:
+    image: postgres:12.4
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: hasura
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: foobar
+
+  hasura:
+    image: hasura/graphql-engine:v1.3.3 #.cli-migrations-v2
+    restart: unless-stopped
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: "postgres://hasura:password@psql:5432/foobar"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set "false" to disable console
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ADMIN_SECRET: "admin"
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256", "key": "FFF1994D-499C-4614-91C8-0FB84C634666", "claims_namespace_path": "$$.hasura"}'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
+    volumes:
+      - ./hasura/migrations:/hasura-migrations
+      - ./hasura/metadata:/hasura-metadata
+      - ./hasura/seeds:/hasura-seeds
+    depends_on:
+      - "psql"
+    ports:
+      - "8080:8080"
+    command:
+      - graphql-engine
+      - serve
+
+  # api:
+  #   image: golang
+  #   restart: unless-stopped
+  #   entrypoint: "/app/api/app"
+  #   volumes:
+  #     - /tmp/pdf:/tmp
+  #   # extra_hosts:
+  #   #   - "graph.dev.dailypcm.com:172.20.1.7"
+
