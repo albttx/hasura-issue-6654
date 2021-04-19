@@ -33,12 +33,11 @@ services:
       - graphql-engine
       - serve
 
-  # api:
-  #   image: golang
-  #   restart: unless-stopped
-  #   entrypoint: "/app/api/app"
-  #   volumes:
-  #     - /tmp/pdf:/tmp
-  #   # extra_hosts:
-  #   #   - "graph.dev.dailypcm.com:172.20.1.7"
+  api:
+    build:
+      context: ./api
+    restart: unless-stopped
+    command: ["go", "run", "/app/main.go"]
+    volumes:
+      - ./api:/app
 

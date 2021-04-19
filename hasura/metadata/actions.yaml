@@ -1,6 +1,12 @@
-actions: []
+actions:
+- name: login
+  definition:
+    kind: synchronous
+    handler: http://api:3000/login
+    forward_client_headers: true
 custom_types:
   enums: []
   input_objects: []
-  objects: []
+  objects:
+  - name: LoginOutput
   scalars: []

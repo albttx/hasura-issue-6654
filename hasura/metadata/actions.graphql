@@ -1,2 +1,14 @@
+type Mutation {
+  login (
+    username: String!
+    password: String!
+  ): LoginOutput
+}
 
+
+
+
+type LoginOutput {
+  access_token : String!
+}
 
